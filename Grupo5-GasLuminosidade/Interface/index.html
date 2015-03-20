@@ -1,0 +1,271 @@
+<!DOCTYPE HTML>
+<!--
+        Prologue by HTML5 UP
+        html5up.net | @n33co
+        Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+    <head>
+        <title>Smart-UFBA</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.scrolly.min.js"></script>
+        <script src="js/jquery.scrollzer.min.js"></script>
+        <script src="js/skel.min.js"></script>
+        <script src="js/skel-layers.min.js"></script>
+        <script src="js/init.js"></script>
+        <script src="js/script_apps.js"></script>
+        <script src="js/justgage.1.0.1.min.js"></script>
+        <script src="js/raphael.2.1.0.min.js"></script>
+        <noscript>
+        <link rel="stylesheet" href="css/skel.css" />
+        <link rel="stylesheet" href="css/style.css" />
+        <link rel="stylesheet" href="css/style-wide.css" />
+        </noscript>
+        <!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
+        <!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
+
+<script type="text/javascript">
+$(function () {
+
+    $('#gas').highcharts({
+
+        chart: {
+            type: 'gauge',
+            plotBackgroundColor: null,
+            plotBackgroundImage: null,
+            plotBorderWidth: 0,
+            plotShadow: false
+        },
+
+        title: {
+            text: 'Nivel de Gás no ambiente'
+        },
+
+        pane: {
+            startAngle: -150,
+            endAngle: 150,
+            background: [{
+                backgroundColor: {
+                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                    stops: [
+                        [0, '#FFF'],
+                        [1, '#333']
+                    ]
+                },
+                borderWidth: 0,
+                outerRadius: '109%'
+            }, {
+                backgroundColor: {
+                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                    stops: [
+                        [0, '#333'],
+                        [1, '#FFF']
+                    ]
+                },
+                borderWidth: 1,
+                outerRadius: '107%'
+            }, {
+                // default background
+            }, {
+                backgroundColor: '#DDD',
+                borderWidth: 0,
+                outerRadius: '105%',
+                innerRadius: '103%'
+            }]
+        },
+
+        // the value axis
+        yAxis: {
+            min: 0,
+            max: 100,
+
+            minorTickInterval: 'auto',
+            minorTickWidth: 1,
+            minorTickLength: 10,
+            minorTickPosition: 'inside',
+            minorTickColor: '#666',
+
+            tickPixelInterval: 30,
+            tickWidth: 2,
+            tickPosition: 'inside',
+            tickLength: 10,
+            tickColor: '#666',
+            labels: {
+                step: 2,
+                rotation: 'auto'
+            },
+            title: {
+                text: 'ppmv'
+            },
+            plotBands: [{
+                from: 0,
+                to: 40,
+                color: '#55BF3B' // green
+            }, {
+                from: 40,
+                to: 80,
+                color: '#DDDF0D' // yellow
+            }, {
+                from: 80,
+                to: 100,
+                color: '#DF5353' // red
+            }]
+        },
+
+        series: [{
+            name: 'Volume',
+            data: [0],
+            tooltip: {
+                valueSuffix: 'ppmv'
+            }
+        }]
+
+    },
+        // Add some life
+    function (chart) {
+        if (!chart.renderer.forExport) {
+            mySound = new Audio("audio/alarm.mp3");
+            setInterval(function () {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8080/org.gujavasc_REST-GAS-LUZ_war_1.0/devices/sensor/0",
+                    success: function (data) {
+//                            console.log(data.state);
+//                            lampada.src = "images/lampada_acesa.png";                          
+                        var point = chart.series[0].points[0],
+                        newVal,
+                        inc = data.state / 10;//Math.round((Math.random() - 0.5) * 20);
+                        newVal = inc;
+
+                        if(inc >= 80){
+                            mySound.play();
+                        }else{
+                            mySound.pause();
+                        }
+                        point.update(newVal);
+                    }
+                });
+
+            }, 1300);
+        }
+    });
+});
+        </script>
+    </head>
+    <body onload="onSensorLuz()">
+
+        <!-- Header -->
+        <div id="header" class="skel-layers-fixed">
+
+            <div class="top">
+
+                <!-- Logo -->
+                <div id="logo">
+                    <span class="image avatar80"><img src="images/logo_wiser_mini.jpg" alt="" /></span>
+                    <h1 id="title">WISER</h1>
+                    <p>Web and Interactive 
+                        <br/>Systems Research Group</p>
+                </div>
+
+                <!-- Nav -->
+                <nav id="nav">
+                    <!--
+                    
+                            Prologue's nav expects links in one of two formats:
+                            
+                            1. Hash link (scrolls to a different section within the page)
+                            
+                               <li><a href="#foobar" id="foobar-link" class="icon fa-whatever-icon-you-want skel-layers-ignoreHref"><span class="label">Foobar</span></a></li>
+
+                            2. Standard link (sends the user to another page/site)
+
+                               <li><a href="http://foobar.tld" id="foobar-link" class="icon fa-whatever-icon-you-want"><span class="label">Foobar</span></a></li>
+                    
+                    -->
+                    <ul>
+                        <li><a href="#lampada" id="lampada-link" class="skel-layers-ignoreHref"><span class="icon fa-lightbulb-o">Lâmpada</span></a></li>
+                        <li><a href="#gas" id="gas-link" class="skel-layers-ignoreHref"><span class="icon fa-fire">Gas</span></a></li>
+                        <li><a href="#documentacao" id="porta-link" class="skel-layers-ignoreHref"><span class="icon fa-ambulance">REST API</span></a></li>
+                    </ul>
+                </nav>
+
+            </div>
+
+            <div class="bottom">
+
+                <!-- Social Icons -->
+                <ul class="icons">
+                    <li><a href="#" class="icon fa-github"><span class="label">Github</span></a></li>
+                </ul>
+
+            </div>
+
+        </div>
+
+        <!-- Main -->
+        <div id="main">
+
+            <!-- Lâmpada -->
+            <section id="lampada" class="two">
+                <div class="container">
+
+                    <header>
+                        <h2>Sensor Luz</h2>
+                    </header>
+
+                    <div class="centered">
+                        <img id="img_lampada" src="images/lampada_apagada.png" alt="" />
+                    </div>
+
+                </div>
+            </section>
+            
+            <!-- Sensor de gas-->
+            <section id="gas" class="two">
+                <div class="container">
+
+                    <header>
+                        <h2>Nivel de Gas</h2>
+                    </header>
+                     <div class="centered" id="interruptor">
+                         <div id="gas" style="min-width: 310px; max-width: 300px; height: 300px; margin: 0 auto"></div>
+                         <audio id="alarm" src="audio/alarm.mp3"></audio>
+                    </div>
+                </div>
+            </section>
+
+            <section id="documentacao" class="two">
+                <div class="container">
+
+                    <header>
+                        <h2>REST API</h2>
+                    </header>
+
+                    <div class="centered" id="doc">
+                            
+                    </div>
+
+                </div>
+            </section>
+            
+        </div>
+
+        <!-- Footer -->
+        <div id="footer">
+
+            <!-- Copyright -->
+            <ul class="copyright">
+                <li>&copy; WISER Research Group. All rights reserved.</li>
+            </ul>
+
+        </div>
+        <script src="js/highcharts.js"></script>
+        <script src="js/highcharts-more.js"></script>
+
+    </body>
+</html>

@@ -1,0 +1,30 @@
+/**
+ * Created by Erbetta on 23/09/2014.
+ */
+$(document).ready(function(){
+
+function showTemperature(){
+        $.ajax({
+        type: "GET",
+        url: "http://localhost:8080/REST-Temp/devices/temp/1",
+        success: function (data) {
+            //console.log(data.state);
+            alert(data.state.text());
+            }
+        });
+        
+}
+
+function showHumidity(){
+        $.ajax({
+        type: "POST",
+        url: "http://localhost:8080/REST-Temp/devices/temp/2",
+        data: {status: data_umid},
+        success: function (data) {
+            console.log(data);
+            }
+        });
+        
+}
+
+});
